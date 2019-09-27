@@ -276,3 +276,4 @@ if __name__ == "__main__":
 
     ftp_util.upload_file(".version", ".version")
     print("已经完成覆盖!当前版本为：%s" % cur_version)
+    input("已完成：请按enter键结束：Press <enter>")
