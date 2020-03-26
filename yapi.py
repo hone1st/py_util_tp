@@ -124,6 +124,14 @@ def up_date_or_save(save):
         ori = cat_api_dict[save["catid"]][save["path"]]
         ori.update(save)
         save = ori
+
+    save["req_headers"] = [
+        {
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+        }
+    ]
+    save["req_body_type"] = "form"
     resp = requests.request("post", yapi_host + "/api/interface/save", json=save)
     print("响应结果:",
           json.dumps(json.loads(resp.content.decode("utf-8"))["errmsg"], indent=2, ensure_ascii=False) + "\r\n",
@@ -149,7 +157,7 @@ def search_file():
     for root, dirs, files in os.walk("./"):
         if root.endswith(controller_dir) and check_ex_dirs(root):
             # 获取模块名字
-            en_module_name = os.path.dirname(root).split("\\")[-1]
+            en_module_name = os.path.dirname(root).split("\\")[-1].replace("./", "")
             deal_file(files, en_module_name, root)
 
     if index:
@@ -282,7 +290,9 @@ def deal_file(files, en_module_name, root):
                                 ]
                     """
                     temp = deal_hash_comment(re.findall(r'\s+\/\*\*[^`]*?\)', content), en_module_name,
-                                             file.replace("Controller.class.php", ""), api)
+                                             file.replace("Controller.class.php", "").replace(".php", "").replace(
+                                                 ".class.php", ""),
+                                             api)
                     if len(temp) > 1:
                         index.append(temp)
 
